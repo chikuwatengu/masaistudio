@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <title>テストサイト</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <h1>ゲーム＆ブログポータル（テスト）</h1>
+  <ul>
+    {% set section = get_section(path="blog/_index.md") %}
+    {% for page in section.pages %}
+      <li><a href="{{ page.permalink }}">{{ page.title }}</a></li>
+    {% endfor %}
+  </ul>
+</body>
+</html>
