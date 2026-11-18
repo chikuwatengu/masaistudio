@@ -9,7 +9,7 @@ draft = false
 
 ### サッカーどっかんルールブック(草稿) {#サッカーどっかんルールブック--草稿}
 
-サッカーどっかんルールブック(草稿)
+[サッカーどっかんルールブック(草稿)](/blog/soccer-dokkan-rulebook-soukou/)
 
 
 ### <span class="org-todo todo ToDo">ToDo</span> 作図 コートの図 {#作図-コートの図}
