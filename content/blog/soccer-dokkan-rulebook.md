@@ -1,5 +1,5 @@
 +++
-title = "RULEBOOK_CONT_コンテナ_サッカーどっかんルール。ブック"
+title = "RULEBOOK_CONT_コンテナ_サッカーどっかんルール・ブック"
 author = ["Takayoshi Tarui"]
 draft = false
 +++
@@ -7,7 +7,9 @@ draft = false
 ## RULEBOOK_CONT_コンテナ_サッカーどっかんルール・ブック {#rulebook-cont-コンテナ-サッカーどっかんルール-ブック}
 
 
-### サッカーどっかんルールブック(草稿) {#サッカーどっかんルールブック--草稿----20261110163906-rulebook-draft-草稿-サッカーどっかんルール-ブック-dot-md}
+### サッカーどっかんルールブック(草稿) {#サッカーどっかんルールブック--草稿}
+
+サッカーどっかんルールブック(草稿)
 
 
 ### <span class="org-todo todo ToDo">ToDo</span> 作図 コートの図 {#作図-コートの図}
