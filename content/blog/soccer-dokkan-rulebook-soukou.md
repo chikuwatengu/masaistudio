@@ -21,7 +21,7 @@ draft = false
 
 #### 「ゲームを記録する 特別編集」 屋外ゲーム・シリーズ Vol. 0001 {#ゲームを記録する-特別編集-屋外ゲーム-シリーズ-vol-dot-0001}
 
-テキスト by たるい
+テキスト by ﾁｸﾜ
 
 2021年4月11日更新
 ![](/ox-hugo/SoccerBall(dl_asset)_rdesign_09753.png)
