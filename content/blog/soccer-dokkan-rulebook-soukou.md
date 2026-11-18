@@ -4,9 +4,6 @@ author = ["Takayoshi Tarui"]
 draft = false
 +++
 
-:ID:       8cbd386f-78f2-4e0a-8682-e350ca14ca31
-
-
 ## RULEBOOK_DRAFT_草稿_サッカーどっかんルール・ブック {#rulebook-draft-草稿-サッカーどっかんルール-ブック}
 
 
@@ -51,7 +48,7 @@ draft = false
 
 -  コート
 
-    {{< figure src="/ox-hugo/Coat_SoccerDokkan_20261113.png" >}}
+    ![](/ox-hugo/Coat_SoccerDokkan_20261113.png)
 
     <!--list-separator-->
 
@@ -276,7 +273,7 @@ draft = false
 ## ソースファイル {#ソースファイル}
 
 
-#### {{< relref "〝サッカーどっかん ルール〟Ver.0.95" >}} {#file-home-takayo-dropbox-org-mindflow-mindpond-サッカーどっかん-ルール-ver-dot-0-dot-95-dot-md}
+#### 〝サッカーどっかん ルール〟Ver.0.95 {#file-home-takayo-dropbox-org-mindflow-mindpond-サッカーどっかん-ルール-ver-dot-0-dot-95-dot-md}
 
 
 #### </home/takayo/Dropbox/Org/MindFlow/MindPond/〝サッカーどっかん ルール〟Ver.0.95.ooutline> {#file-home-takayo-dropbox-org-mindflow-mindpond-サッカーどっかん-ルール-ver-dot-0-dot-95-dot-ooutline}
