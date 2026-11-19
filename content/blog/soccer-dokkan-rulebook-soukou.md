@@ -2,6 +2,7 @@
 title = "“サッカーどっかん”ルール・ブック"
 author = ["Takayoshi Tarui"]
 draft = false
+template = "rulebook.html"
 +++
 
 ## 「ゲームを記録する 特別編集」 屋外ゲーム・シリーズ Vol. 0001 {#ゲームを記録する-特別編集-屋外ゲーム-シリーズ-vol-dot-0001}

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>{% block title %}MASAISTUDIO{% endblock title %}</title>
+	<style>
+	 /* サイト全体の共通ベーススタイル */
+	 body {
+	     max-width: 720px;
+	     margin: 40px auto;
+	     padding: 0 20px 80px;
+	     color: #222;
+	     line-height: 1.8;
+	     font-family: sans-serif;
+	 }
+	 header.site-header {
+	     border-bottom: 1px solid #ddd;
+	     padding-bottom: 12px;
+	     margin-bottom: 2.5em;
+	 }
+	 header.site-header a {
+	     text-decoration: none;
+	     color: #222;
+	     font-weight: bold;
+	     font-size: 1.2em;
+	 }
+	 img {
+	     max-width: 100%;
+	     height: auto;
+	 }
+	 {% block extra_css %}{% endblock extra_css %}
+	</style>
+    </head>
+    <body>
+
+	<header class="site-header">
+	    <a href="/">MASAISTUDIO</a>
+	</header>
+
+	<main>
+	    {% block content %}{% endblock content %}
+	</main>
+
+    </body>
+</html>
