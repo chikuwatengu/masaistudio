@@ -1,104 +1,95 @@
-<!DOCTYPE html>
-<html lang="ja">
-    <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>{{ page.title }}</title>
-	<style>
-	 /* ページ全体を「昭和の学術書・公式ルールブック」風に */
-	 body {
-	     max-width: 720px;
-	     margin: 40px auto;
-	     padding: 0 24px 80px;
-	     background-color: #faf8f5; /* 少し焼けた古い紙のような生成り色 */
-	     color: #222;
-	     font-family: "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", serif;
-	 }
+{% extends "base.html" %}
 
-	 /* 上部の「トップへ戻る」を資料のヘッダー風に */
-	 .back-link {
-	     display: inline-block;
-	     font-size: 0.85em;
-	     color: #555;
-	     text-decoration: none;
-	     border: 1px solid #999;
-	     padding: 2px 8px;
-	     margin-bottom: 2em;
-	 }
-	 .back-link:hover {
-	     background-color: #eee;
-	 }
+{% block title %}{{ page.title }}{% endblock title %}
 
-	 /* 記事タイトルを重厚な表紙・扉ページ風に */
-	 h1.doc-title {
-	     font-size: 1.75em;
-	     text-align: center;
-	     border-top: 3px double #222;
-	     border-bottom: 3px double #222;
-	     padding: 16px 0;
-	     margin-bottom: 1.5em;
-	     letter-spacing: 0.08em;
-	 }
+{% block extra_css %}
+/* ページ全体を「昭和の学術書・公式ルールブック」風に */
+body {
+background-color: #faf8f5; /* 少し焼けた古い紙のような生成り色 */
+font-family: "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", serif;
+}
 
-	 /* 章・節の見出し（h2, h3, h4） */
-	 h2 {
-	     font-size: 1.35em;
-	     border-bottom: 1px solid #222;
-	     padding-bottom: 4px;
-	     margin-top: 2.5em;
-	 }
-	 h3 {
-	     font-size: 1.15em;
-	     border-left: 4px solid #222;
-	     padding-left: 10px;
-	     margin-top: 2em;
-	 }
-	 h4 {
-	     font-size: 1.05em;
-	     margin-top: 1.5em;
-	     text-decoration: underline;
-	 }
+/* 上部の「トップへ戻る」を資料のヘッダー風に */
+.back-link {
+display: inline-block;
+font-size: 0.85em;
+color: #555;
+text-decoration: none;
+border: 1px solid #999;
+padding: 2px 8px;
+margin-bottom: 2em;
+}
+.back-link:hover {
+background-color: #eee;
+}
 
-	 /* 本文の段落：行頭1文字字下げ＆文庫本風の組版 */
-	 article p {
-	     text-indent: 1em;        /* ご要望の行頭1文字字下げ */
-	     text-align: justify;     /* 両端揃え */
-	     line-height: 1.85;
-	     margin-top: 0;
-	     margin-bottom: 0.45em;   /* 段落間の隙間を詰めて書籍風に */
-	 }
+/* 記事タイトルを重厚な表紙・扉ページ風に */
+h1.doc-title {
+font-size: 1.75em;
+text-align: center;
+border-top: 3px double #222;
+border-bottom: 3px double #222;
+padding: 16px 0;
+margin-bottom: 1.5em;
+letter-spacing: 0.08em;
+}
 
-	 /* 画像が字下げで右にずれるのを防ぎ、中央揃えにする */
-	 article p:has(img) {
-	     text-indent: 0;
-	     text-align: center;
-	     margin: 2em 0;
-	 }
-	 img {
-	     max-width: 100%;
-	     height: auto;
-	     /* border: 1px solid #ccc; */
-	 }
+/* 章・節の見出し */
+h2 {
+font-size: 1.35em;
+border-bottom: 1px solid #222;
+padding-bottom: 4px;
+margin-top: 2.5em;
+}
+h3 {
+font-size: 1.15em;
+border-left: 4px solid #222;
+padding-left: 10px;
+margin-top: 2em;
+}
+h4 {
+font-size: 1.05em;
+margin-top: 1.5em;
+text-decoration: underline;
+}
 
-	 /* 脚注エリアを学術論文の末尾風に */
-	 .footnote-definition {
-	     font-size: 0.85em;
-	     color: #444;
-	     border-top: 1px solid #ccc;
-	     padding-top: 8px;
-	     margin-top: 2em;
-	 }
-	</style>
-    </head>
-    <body>
+/* 本文の段落：行頭1文字字下げ＆文庫本風の組版 */
+article p {
+text-indent: 1em;        /* ご要望の行頭1文字字下げ */
+text-align: justify;     /* 両端揃え */
+line-height: 1.85;
+margin-top: 0;
+margin-bottom: 0.45em;
+}
 
-	<a href="/" class="back-link">← トップへ戻る</a>
+/* 画像が字下げで右にずれるのを防ぎ、中央揃えにする */
+article p:has(img) {
+text-indent: 0;
+text-align: center;
+margin: 2em 0;
+}
+img {
+/* border: 1px solid #ccc; */
+}
 
-	<h1 class="doc-title">{{ page.title }}</h1>
+/* スマホ画面でのタイトル・見出しの微調整 */
+@media (max-width: 600px) {
+h1.doc-title {
+font-size: 1.35em;
+padding: 12px 0;
+}
+h2 {
+font-size: 1.2em;
+}
+}
+{% endblock extra_css %}
 
-	<article>
-	    {{ page.content | safe }}
-	</article>
+{% block content %}
+<a href="/" class="back-link">← トップへ戻る</a>
 
-    </body>
-</html>
+<h1 class="doc-title">{{ page.title }}</h1>
+
+<article>
+    {{ page.content | safe }}
+</article>
+{% endblock content %}

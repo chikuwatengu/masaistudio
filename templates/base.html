@@ -9,38 +9,32 @@
 	 body {
 	     max-width: 720px;
 	     margin: 40px auto;
-	     padding: 0 20px 80px;
+	     padding: 0 24px 80px;
 	     color: #222;
 	     line-height: 1.8;
 	     font-family: sans-serif;
-	 }
-	 header.site-header {
-	     border-bottom: 1px solid #ddd;
-	     padding-bottom: 12px;
-	     margin-bottom: 2.5em;
-	 }
-	 header.site-header a {
-	     text-decoration: none;
-	     color: #222;
-	     font-weight: bold;
-	     font-size: 1.2em;
 	 }
 	 img {
 	     max-width: 100%;
 	     height: auto;
 	 }
+
+	 /* スマホ画面（600px以下）向けの共通微調整 */
+	 @media (max-width: 600px) {
+	     body {
+		 margin: 16px auto;
+		 padding: 0 16px 60px;
+		 font-size: 15px;
+	     }
+	 }
+
+	 /* 子テンプレート（rulebook.html など）専用の追加CSSが入る場所 */
 	 {% block extra_css %}{% endblock extra_css %}
 	</style>
     </head>
     <body>
 
-	<header class="site-header">
-	    <a href="/">MASAISTUDIO</a>
-	</header>
-
-	<main>
-	    {% block content %}{% endblock content %}
-	</main>
+	{% block content %}{% endblock content %}
 
     </body>
 </html>
