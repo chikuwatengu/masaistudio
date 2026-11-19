@@ -272,23 +272,5 @@ draft = false
 
 逆に、単にチート・プレイをそのプレイヤーの悪行として片付け、ルール上の脆弱性から目を背けることの方が問題です。チート・プレイの可能性が見つかっても、その場限りの雰囲気を楽しむために単にマナーとして制限するだけで、ルールとして何の合理性も設けていなければ、真面目にそのゲームを愛しているプレイヤーは、いずれゲームへの熱意を失ってしまうことでしょう。
 
-
-### End of text {#end-of-text}
-
-
-## ソースファイル {#ソースファイル}
-
-
-#### 〝サッカーどっかん ルール〟Ver.0.95 {#file-home-takayo-dropbox-org-mindflow-mindpond-サッカーどっかん-ルール-ver-dot-0-dot-95-dot-md}
-
-
-#### </home/takayo/Dropbox/Org/MindFlow/MindPond/〝サッカーどっかん ルール〟Ver.0.95.ooutline> {#file-home-takayo-dropbox-org-mindflow-mindpond-サッカーどっかん-ルール-ver-dot-0-dot-95-dot-ooutline}
-
-
-#### </ox-hugo/〝サッカーどっかん ルール〟Ver.0.95.docx> {#file-home-takayo-dropbox-org-mindflow-mindpond-サッカーどっかん-ルール-ver-dot-0-dot-95-dot-docx}
-
-
-#### </home/takayo/Dropbox/Org/MindFlow/MindPond/〝サッカーどっかん ルール〟Ver.0.95.opml> {#file-home-takayo-dropbox-org-mindflow-mindpond-サッカーどっかん-ルール-ver-dot-0-dot-95-dot-opml}
-
 [^fn:1]: DEFINITION NOT FOUND.
 [^fn:2]: DEFINITION NOT FOUND.
