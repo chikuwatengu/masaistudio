@@ -228,10 +228,5 @@ draft = false
 
 ダウンロードURL
 
-
-#### <span class="org-todo todo ToDo">ToDo</span> 追記 ダウンロードURL {#追記-ダウンロードurl}
-
-<span class="timestamp-wrapper"><span class="timestamp">[2026-11-19 木 10:53]</span></span>
-
 [^fn:1]: DEFINITION NOT FOUND.
 [^fn:2]: DEFINITION NOT FOUND.
