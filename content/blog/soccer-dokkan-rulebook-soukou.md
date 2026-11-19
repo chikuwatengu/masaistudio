@@ -8,7 +8,7 @@ draft = false
 
 テキスト by ﾁｸﾜ
 
-2021年4月11日更新
+2026年11月19日更新
 ![](/ox-hugo/SoccerBall(dl_asset)_rdesign_09753.png)
 
 
