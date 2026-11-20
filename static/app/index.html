@@ -364,233 +364,260 @@
       }
     }
 
-  function renderView() {
-  compassEl.textContent = ${DIRS[dir].name} (${px},${py});
-  statusTextEl.textContent = YOU  LV:1  HP:18/18  WIN:${wins};
-  let mm = '';
-  for (let y = 0; y < MAP.length; y++) {
-  for (let x = 0; x < MAP[y].length; x++) {
-  if (x === px && y === py) mm += DIRS[dir].arrow;
-  else mm += MAP[y][x] === '#' ? '█' : '·';
+    function renderView() {
+    compassEl.textContent = `${DIRS[dir].name} (${px},${py})`;
+    statusTextEl.textContent = `YOU  LV:1  HP:18/18  WIN:${wins}`;
+
+    let mm = '';
+    for (let y = 0; y < MAP.length; y++) {
+      for (let x = 0; x < MAP[y].length; x++) {
+        if (x === px && y === py) mm += DIRS[dir].arrow;
+        else mm += MAP[y][x] === '#' ? '█' : '·';
+      }
+      mm += '\n';
+    }
+    minimapEl.textContent = mm;
+
+    if (encounter) {
+      screenEl.style.color = encounter.type === 'alice' ? '#d2a8ff' : '#ff7b72';
+      screenEl.textContent = encounter.type === 'alice' ? ALICE_AA : SLIME_AA;
+      return;
+    }
+
+    screenEl.style.color = '#39d353';
+    const f = DIRS[dir];
+    const l = DIRS[(dir + 3) % 4];
+    const r = DIRS[(dir + 1) % 4];
+
+    const front1Wall = isWall(px + f.dx, py + f.dy);
+    const front2Wall = isWall(px + f.dx * 2, py + f.dy * 2);
+    const left0Wall  = isWall(px + l.dx, py + l.dy);
+    const right0Wall = isWall(px + r.dx, py + r.dy);
+
+    if (front1Wall) {
+      screenEl.textContent = [
+        "+-------------------------+",
+        "|\\                       /|",
+        "| +---------------------+ |",
+        "| |                     | |",
+        "| |                     | |",
+        "| |      [  壁  ]       | |",
+        "| |                     | |",
+        "| |                     | |",
+        "| +---------------------+ |",
+        "|/                       \\|",
+        "+-------------------------+"
+      ].join('\n');
+      return;
+    }
+
+    const bs = String.fromCharCode(92);
+    const L1 = left0Wall  ? bs + " " : "_ ";
+    const R1 = right0Wall ? " /" : " _";
+    const L2 = left0Wall  ? " " + bs : " _";
+    const R2 = right0Wall ? "/ " : "_ ";
+
+    const center = front2Wall ? [
+      "|  +-------------------+  |",
+      "|  |                   |  |",
+      "|  |     [ 奥の壁 ]    |  |",
+      "|  |                   |  |",
+      "|  +-------------------+  |"
+    ] : [
+      "|  |\\                 /|  |",
+      "|  | +---------------+ |  |",
+      "|  | |       +       | |  |",
+      "|  | +---------------+ |  |",
+      "|  |/                 \\|  |"
+    ];
+
+    screenEl.textContent = [
+      "+-------------------------+",
+      `|${L1}                     ${R1}|`,
+      `| ${L2}                   ${R2} |`,
+      ...center,
+      `| ${R2}                   ${L2} |`,
+      `|${R1}                     ${L1}|`,
+      "+-------------------------+"
+    ].join('\n');
   }
-  mm += '\n';
-  }
-  minimapEl.textContent = mm;
-  if (encounter) {
-  screenEl.style.color = encounter.type === 'alice' ? '#d2a8ff' : '#ff7b72';
-  screenEl.textContent = encounter.type === 'alice' ? ALICE_AA : SLIME_AA;
-  return;
-  }
-  screenEl.style.color = '#39d353';
-  const f = DIRS[dir];
-  const l = DIRS[(dir + 3) % 4];
-  const r = DIRS[(dir + 1) % 4];
-  const front1Wall = isWall(px + f.dx, py + f.dy);
-  const front2Wall = isWall(px + f.dx * 2, py + f.dy * 2);
-  const left0Wall  = isWall(px + l.dx, py + l.dy);
-  const right0Wall = isWall(px + r.dx, py + r.dy);
-  if (front1Wall) {
-  screenEl.textContent = [
-  "+-------------------------+",
-  "|\                       /|",
-  "| +---------------------+ |",
-  "| |                     | |",
-  "| |                     | |",
-  "| |      [  壁  ]       | |",
-  "| |                     | |",
-  "| |                     | |",
-  "| +---------------------+ |",
-  "|/                       \|",
-  "+-------------------------+"
-  ].join('\n');
-  return;
-  }
-  const L1 = left0Wall  ? "\ " : "_ ";
-  const R1 = right0Wall ? " /" : " _";
-  const L2 = left0Wall  ? " \" : " ";
-  const R2 = right0Wall ? "/ " : " ";
-  const center = front2Wall ? [
-  "|  +-------------------+  |",
-  "|  |                   |  |",
-  "|  |     [ 奥の壁 ]    |  |",
-  "|  |                   |  |",
-  "|  +-------------------+  |"
-  ] : [
-  "|  |\                 /|  |",
-  "|  | +---------------+ |  |",
-  "|  | |       +       | |  |",
-  "|  | +---------------+ |  |",
-  "|  |/                 \|  |"
-  ];
-  screenEl.textContent = [
-  "+-------------------------+",
-  |${L1}                     ${R1}|,
-  | ${L2}                   ${R2} |,
-  ...center,
-  | ${R2}                   ${L2} |,
-  |${R1}                     ${L1}|,
-  "+-------------------------+"
-  ].join('\n');
-  }
+
   function triggerStepAnim() {
-  screenEl.classList.add('step-shake');
-  setTimeout(() => screenEl.classList.remove('step-shake'), 80);
+    screenEl.classList.add('step-shake');
+    setTimeout(() => screenEl.classList.remove('step-shake'), 80);
   }
+
   function addLog(text, type = 'sys') {
-  const div = document.createElement('div');
-  div.className = msg ${type};
-  div.textContent = text;
-  logEl.appendChild(div);
-  logEl.scrollTop = logEl.scrollHeight;
+    const div = document.createElement('div');
+    div.className = `msg ${type}`;
+    div.textContent = text;
+    logEl.appendChild(div);
+    logEl.scrollTop = logEl.scrollHeight;
   }
+
   function addDiary(text) {
-  const div = document.createElement('div');
-  div.className = 'diary-item';
-  div.textContent = ・${text};
-  diaryListEl.prepend(div);
+    const div = document.createElement('div');
+    div.className = 'diary-item';
+    div.textContent = `・${text}`;
+    diaryListEl.prepend(div);
   }
+
   function handleForm(e) {
-  e.preventDefault();
-  const val = inputEl.value.trim();
-  if (!val) return;
-  inputEl.value = '';
-  execCmd(val);
+    e.preventDefault();
+    const val = inputEl.value.trim();
+    if (!val) return;
+    inputEl.value = '';
+    execCmd(val);
   }
+
   function startHighLow() {
-  if (!encounter) {
-  addLog('勝負する相手がいない！');
-  return;
+    if (!encounter) {
+      addLog('勝負する相手がいない！');
+      return;
+    }
+    const baseCard = Math.floor(Math.random() * 11) + 2;
+    highLowState = { baseCard };
+
+    addLog(`YOU「とりまハイ＆ローで勝負しない？」`, 'user');
+    setTimeout(() => {
+      if (encounter.type === 'alice') {
+        addLog(`アリス「よし、引き受けた！ 負けないよ！」`, 'chat-npc');
+      } else {
+        addLog(`スライム「プルプル！（いいよ！）」`, 'enemy');
+      }
+      addLog(`🃏 場のカードは 【 ${baseCard} 】 だ！(1〜13) 次は HIGH か LOW か？`, 'card-art');
+      renderButtons();
+    }, 150);
   }
-  const baseCard = Math.floor(Math.random() * 11) + 2; // 2〜12が出るようにして駆け引きしやすくする
-  highLowState = { baseCard };
-  addLog(YOU「とりまハイ＆ローで勝負しない？」, 'user');
-  setTimeout(() => {
-  if (encounter.type === 'alice') {
-  addLog(アリス「よし、引き受けた！ 負けないよ！」, 'chat-npc');
-  } else {
-  addLog(スライム「プルプル！（いいよ！）」, 'enemy');
-  }
-  addLog(🃏 場のカードは 【 ${baseCard} 】 だ！(1〜13) 次は HIGH か LOW か？, 'card-art');
-  renderButtons();
-  }, 150);
-  }
+
   function resolveHighLow(guess) {
-  if (!highLowState || !encounter) return;
-  const nextCard = Math.floor(Math.random() * 13) + 1;
-  const base = highLowState.baseCard;
-  addLog(🃏 めくられたカードは…… 【 ${nextCard} 】！, 'card-art');
-  const isWin = (guess === 'high' && nextCard > base) || (guess === 'low' && nextCard < base);
-  const isDraw = nextCard === base;
-  if (isDraw) {
-  addLog('引き分け！ もう1回！ 次のカードを選んで！', 'sys');
-  highLowState.baseCard = nextCard;
-  return;
+    if (!highLowState || !encounter) return;
+    const nextCard = Math.floor(Math.random() * 13) + 1;
+    const base = highLowState.baseCard;
+    addLog(`🃏 めくられたカードは…… 【 ${nextCard} 】！`, 'card-art');
+
+    const isWin = (guess === 'high' && nextCard > base) || (guess === 'low' && nextCard < base);
+    const isDraw = nextCard === base;
+
+    if (isDraw) {
+      addLog('引き分け！ もう1回！ 次のカードを選んで！', 'sys');
+      highLowState.baseCard = nextCard;
+      return;
+    }
+
+    if (isWin) {
+      wins++;
+      addLog(`🎉 あなたの勝ち！ ${encounter.name} に勝利した！`, 'user');
+      if (encounter.type === 'alice') {
+        addLog(`アリス「参りました！ ギルドカード置いていくね！」`, 'chat-npc');
+        addLog(`📜 [ギルドカード獲得] アリスのSNS: ${encounter.sns}`, 'card-art');
+        addDiary(`迷宮で「アリス」とハイ＆ロー勝負をして勝利した！`);
+      } else {
+        addDiary(`ゴーストスライムとのトランプ勝負に勝った。`);
+      }
+    } else {
+      addLog(`💦 残念、あなたの負け！ ${encounter.name} は満足そうに去っていった。`, 'enemy');
+      if (encounter.type === 'alice') {
+        addLog(`アリス「やったー！ また迷宮で会おうね！」`, 'chat-npc');
+        addDiary(`迷宮で「アリス」とハイ＆ロー勝負をして惜敗した。`);
+      }
+    }
+
+    highLowState = null;
+    encounter = null;
+    renderView();
+    renderButtons();
   }
-  if (isWin) {
-  wins++;
-  addLog(🎉 あなたの勝ち！ ${encounter.name} に勝利した！, 'user');
-  if (encounter.type === 'alice') {
-  addLog(アリス「参りました！ ギルドカード置いていくね！」, 'chat-npc');
-  addLog(📜 [ギルドカード獲得] アリスのSNS: ${encounter.sns}, 'card-art');
-  addDiary(迷宮で「アリス」とハイ＆ロー勝負をして勝利した！);
-  } else {
-  addDiary(ゴーストスライムとのトランプ勝負に勝った。);
-  }
-  } else {
-  addLog(💦 残念、あなたの負け！ ${encounter.name} は満足そうに去っていった。, 'enemy');
-  if (encounter.type === 'alice') {
-  addLog(アリス「やったー！ また迷宮で会おうね！」, 'chat-npc');
-  addDiary(迷宮で「アリス」とハイ＆ロー勝負をして惜敗した。);
-  }
-  }
-  highLowState = null;
-  encounter = null;
-  renderView();
-  renderButtons();
-  }
+
   function execCmd(cmd) {
-  addLog(> ${cmd}, 'user');
-  const c = cmd.toLowerCase();
-  if (highLowState) {
-  if (c === 'high' || c === 'h') { resolveHighLow('high'); return; }
-  if (c === 'low' || c === 'l') { resolveHighLow('low'); return; }
-  if (c === 'run' || c === 'やめる') {
-  addLog('勝負を中断した。');
-  highLowState = null; encounter = null;
-  renderView(); renderButtons();
-  return;
+    addLog(`> ${cmd}`, 'user');
+    const c = cmd.toLowerCase();
+
+    if (highLowState) {
+      if (c === 'high' || c === 'h') { resolveHighLow('high'); return; }
+      if (c === 'low' || c === 'l') { resolveHighLow('low'); return; }
+      if (c === 'run' || c === 'やめる') {
+        addLog('勝負を中断した。');
+        highLowState = null; encounter = null;
+        renderView(); renderButtons();
+        return;
+      }
+      addLog('HIGH か LOW を選んでください！');
+      return;
+    }
+
+    if (c === 'w' || c === '前進') {
+      if (encounter) { addLog(`${encounter.name} が立ちふさがっている！`, 'enemy'); return; }
+      const nx = px + DIRS[dir].dx;
+      const ny = py + DIRS[dir].dy;
+      if (isWall(nx, ny)) {
+        addLog('「いてっ！」 目の前は壁だ。');
+        triggerStepAnim();
+        return;
+      }
+      px = nx; py = ny;
+      triggerStepAnim();
+
+      const r = Math.random();
+      if (r < 0.2) {
+        encounter = { type: 'alice', name: '冒険者アリス', sns: 'https://x.com' };
+        addLog('！！ 背後から足音が近づいてくる……', 'chat-npc');
+        addLog('「あ、見つけた！ 冒険者アリスが追いかけてきた！」', 'chat-npc');
+      } else if (r < 0.4) {
+        encounter = { type: 'slime', name: 'ゴーストスライム' };
+        addLog('おおっと！ ゴーストスライムが現れた！', 'enemy');
+      } else {
+        addLog('一歩進んだ。');
+      }
+      renderView();
+      renderButtons();
+    } else if (c === 'a' || c === '左向') {
+      dir = (dir + 3) % 4;
+      addLog('左を向いた。');
+      renderView();
+    } else if (c === 'd' || c === '右向') {
+      dir = (dir + 1) % 4;
+      addLog('右を向いた。');
+      renderView();
+    } else if (c === 'highlow' || c === 'ハイ＆ロー勝負') {
+      startHighLow();
+    } else if (c === 'fight' || c === 'たたかう') {
+      if (!encounter) { addLog('ここには誰もいない。'); return; }
+      wins++;
+      addLog(`あなたの攻撃！ ${encounter.name} を撃退した！`, 'user');
+      encounter = null;
+      renderView();
+      renderButtons();
+    } else if (c === 'run' || c === 'にげる') {
+      if (!encounter) { addLog('逃げる相手がいない。'); return; }
+      addLog(`${encounter.name} から距離をとった。`);
+      encounter = null;
+      renderView();
+      renderButtons();
+    } else if (c === 'spell' || c === 'じゅもん') {
+      addLog('カティノを唱えた！ 心地よい風が吹いた。');
+    } else {
+      addLog(`「${cmd}」とつぶやいた。`);
+    }
   }
-  addLog('HIGH か LOW を選んでください！');
-  return;
-  }
-  if (c === 'w' || c === '前進') {
-  if (encounter) { addLog(${encounter.name} が立ちふさがっている！, 'enemy'); return; }
-  const nx = px + DIRS[dir].dx;
-  const ny = py + DIRS[dir].dy;
-  if (isWall(nx, ny)) {
-  addLog('「いてっ！」 目の前は壁だ。');
-  triggerStepAnim();
-  return;
-  }
-  px = nx; py = ny;
-  triggerStepAnim();
-  const r = Math.random();
-  if (r < 0.2) {
-  encounter = { type: 'alice', name: '冒険者アリス', sns: 'x.com' };
-  addLog('！！ 背後から足音が近づいてくる……', 'chat-npc');
-  addLog('「あ、見つけた！ 冒険者アリスが追いかけてきた！」', 'chat-npc');
-  } else if (r < 0.4) {
-  encounter = { type: 'slime', name: 'ゴーストスライム' };
-  addLog('おおっと！ ゴーストスライムが現れた！', 'enemy');
-  } else {
-  addLog('一歩進んだ。');
-  }
-  renderView();
-  renderButtons();
-  } else if (c === 'a' || c === '左向') {
-  dir = (dir + 3) % 4;
-  addLog('左を向いた。');
-  renderView();
-  } else if (c === 'd' || c === '右向') {
-  dir = (dir + 1) % 4;
-  addLog('右を向いた。');
-  renderView();
-  } else if (c === 'highlow' || c === 'ハイ＆ロー勝負') {
-  startHighLow();
-  } else if (c === 'fight' || c === 'たたかう') {
-  if (!encounter) { addLog('ここには誰もいない。'); return; }
-  wins++;
-  addLog(あなたの攻撃！ ${encounter.name} を撃退した！, 'user');
-  encounter = null;
-  renderView();
-  renderButtons();
-  } else if (c === 'run' || c === 'にげる') {
-  if (!encounter) { addLog('逃げる相手がいない。'); return; }
-  addLog(${encounter.name} から距離をとった。);
-  encounter = null;
-  renderView();
-  renderButtons();
-  } else if (c === 'spell' || c === 'じゅもん') {
-  addLog('カティノを唱えた！ 心地よい風が吹いた。');
-  } else {
-  addLog(「${cmd}」とつぶやいた。);
-  }
-  }
+
   // PCキーボード操作
   document.addEventListener('keydown', (e) => {
-  if (document.activeElement === inputEl || !mypageEl.classList.contains('hidden')) return;
-  if (e.key === 'w' || e.key === 'ArrowUp') execCmd('w');
-  if (e.key === 'a' || e.key === 'ArrowLeft') execCmd('a');
-  if (e.key === 'd' || e.key === 'ArrowRight') execCmd('d');
+    if (document.activeElement === inputEl || !mypageEl.classList.contains('hidden')) return;
+    if (e.key === 'w' || e.key === 'ArrowUp') execCmd('w');
+    if (e.key === 'a' || e.key === 'ArrowLeft') execCmd('a');
+    if (e.key === 'd' || e.key === 'ArrowRight') execCmd('d');
   });
+
   // 初期起動時のURLパラメータ判定 (?mode=mypage ならマイページを開く)
   const params = new URLSearchParams(location.search);
   if (params.get('mode') === 'mypage') {
-  switchMode('mypage');
+    switchMode('mypage');
   } else {
-  renderView();
-  renderButtons();
+    renderView();
+    renderButtons();
   }
+
   	</script>
 </body>
 </html>
