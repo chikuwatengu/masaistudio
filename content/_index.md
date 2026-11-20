@@ -1,6 +1,5 @@
 +++
 title = "ゲーム＆ブログポータル（テスト）"
-author = ["Takayoshi Tarui"]
 draft = false
 +++
 
