@@ -1,3 +1,4 @@
 base_url = "https://masaistudio.pages.dev"
+title = "ゲーム＆ブログポータル（テスト）"
 compile_sass = true
 build_search_index = false
