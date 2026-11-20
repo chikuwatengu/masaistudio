@@ -1,336 +1,596 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Wizardry-like CUI</title>
-<style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    background-color: #000000;
-    color: #e6edf3;
-    font-family: 'Courier New', Consolas, monospace;
-    height: 100dvh;
-    display: flex;
-    flex-direction: column;
-    padding: 6px;
-    gap: 6px;
-  }
-  .wiz-box {
-    border: 3px double #ffffff;
-    background: #000000;
-    padding: 8px;
-  }
-  #viewport {
-    height: 36%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    position: relative;
-  }
-  #ascii-screen {
-    font-size: 11px;
-    line-height: 1.1;
-    color: #39d353;
-    white-space: pre;
-    text-align: center;
-    transition: transform 0.08s ease-out;
-  }
-  .step-shake {
-    transform: scale(1.06);
-  }
-  #compass {
-    position: absolute;
-    top: 6px;
-    right: 10px;
-    font-size: 12px;
-    color: #f0883e;
-  }
-  #minimap {
-    position: absolute;
-    top: 6px;
-    left: 10px;
-    font-size: 10px;
-    line-height: 1.05;
-    color: #8b949e;
-    white-space: pre;
-  }
-  #log {
-    flex: 1;
-    overflow-y: auto;
-    font-size: 13px;
-    line-height: 1.5;
-  }
-  .msg { margin-bottom: 4px; }
-  .sys { color: #ffffff; }
-  .user { color: #7ee787; }
-  .enemy { color: #ff7b72; }
-  #party {
-    font-size: 12px;
-    color: #79c0ff;
-    display: flex;
-    justify-content: space-between;
-  }
-  #quick-cmds {
-    display: flex;
-    gap: 6px;
-    overflow-x: auto;
-    padding: 2px 0;
-  }
-  .chip {
-    background: #000;
-    color: #fff;
-    border: 1px solid #fff;
-    padding: 6px 10px;
-    font-size: 13px;
-    font-family: inherit;
-    white-space: nowrap;
-    cursor: pointer;
-  }
-  .chip:active { background: #fff; color: #000; }
-  #cmd-form {
-    display: flex;
-    align-items: center;
-    border: 1px solid #fff;
-    padding: 6px 10px;
-  }
-  #prompt { color: #fff; margin-right: 8px; }
-  #cmd-input {
-    flex: 1;
-    background: transparent;
-    border: none;
-    color: #fff;
-    font-size: 16px;
-    font-family: inherit;
-    outline: none;
-  }
-  #send-btn {
-    background: #fff;
-    color: #000;
-    border: none;
-    padding: 4px 10px;
-    font-weight: bold;
-    font-family: inherit;
-  }
-</style>
-</head>
-<body>
+    <!DOCTYPE html>
+    <html lang="ja">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>MasaiStudio Portal / App</title>
+    <style>
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      body {
+        background-color: #000000;
+        color: #e6edf3;
+        font-family: 'Courier New', Consolas, monospace;
+        height: 100dvh;
+        display: flex;
+        flex-direction: column;
+        padding: 6px;
+        gap: 6px;
+      }
+      .wiz-box {
+        border: 3px double #ffffff;
+        background: #000000;
+        padding: 10px;
+      }
+      .hidden { display: none !important; }
 
-  <div id="viewport" class="wiz-box">
-    <pre id="minimap"></pre>
-    <div id="compass">N (1,5)</div>
-    <pre id="ascii-screen"></pre>
-  </div>
+      /* ================= マイページ（地上拠点）用スタイル ================= */
+      #mypage-view {
+        flex: 1;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        font-size: 13px;
+        line-height: 1.6;
+      }
+      #mypage-view h2 {
+        font-size: 15px;
+        color: #79c0ff;
+        border-bottom: 1px dashed #30363d;
+        padding-bottom: 4px;
+        margin-bottom: 6px;
+      }
+      .action-btn {
+        display: block;
+        width: 100%;
+        text-align: left;
+        background: #0d1117;
+        color: #7ee787;
+        border: 1px solid #7ee787;
+        padding: 10px 12px;
+        font-family: inherit;
+        font-size: 14px;
+        font-weight: bold;
+        cursor: pointer;
+        margin-bottom: 6px;
+      }
+      .action-btn:active { background: #7ee787; color: #000; }
+      .sns-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 4px 0;
+        border-bottom: 1px dotted #21262d;
+      }
+      .sns-row input[type="text"] {
+        background: #161b22;
+        border: 1px solid #30363d;
+        color: #fff;
+        padding: 3px 6px;
+        font-family: inherit;
+        font-size: 12px;
+        width: 55%;
+      }
+      .diary-item { color: #d2a8ff; font-size: 12px; }
 
-  <div id="log" class="wiz-box">
-    <div class="msg sys">* 迷宮の入り口に立っている *</div>
-  </div>
+      /* ================= ダンジョン探索用スタイル ================= */
+      #dungeon-view {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        min-height: 0;
+      }
+      #viewport {
+        height: 35%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        position: relative;
+      }
+      #ascii-screen {
+        font-size: 11px;
+        line-height: 1.1;
+        color: #39d353;
+        white-space: pre;
+        text-align: center;
+        transition: transform 0.08s ease-out;
+      }
+      .step-shake { transform: scale(1.06); }
+      #compass {
+        position: absolute;
+        top: 6px;
+        right: 10px;
+        font-size: 12px;
+        color: #f0883e;
+      }
+      #minimap {
+        position: absolute;
+        top: 6px;
+        left: 10px;
+        font-size: 10px;
+        line-height: 1.05;
+        color: #8b949e;
+        white-space: pre;
+      }
+      #log {
+        flex: 1;
+        overflow-y: auto;
+        font-size: 13px;
+        line-height: 1.5;
+      }
+      .msg { margin-bottom: 4px; word-break: break-all; }
+      .sys { color: #ffffff; }
+      .user { color: #7ee787; }
+      .enemy { color: #ff7b72; }
+      .chat-npc { color: #d2a8ff; }
+      .card-art { color: #f2cc60; font-weight: bold; }
 
-  <div id="party" class="wiz-box">
-    <span>YOU  LV:1  HP:18/18</span>
-    <span>AC:8  状態:正常</span>
-  </div>
+      #party {
+        font-size: 12px;
+        color: #79c0ff;
+        display: flex;
+        justify-content: space-between;
+      }
+      #quick-cmds {
+        display: flex;
+        gap: 6px;
+        overflow-x: auto;
+        padding: 2px 0;
+      }
+      .chip {
+        background: #000;
+        color: #fff;
+        border: 1px solid #fff;
+        padding: 6px 10px;
+        font-size: 13px;
+        font-family: inherit;
+        white-space: nowrap;
+        cursor: pointer;
+      }
+      .chip:active { background: #fff; color: #000; }
+      .chip.highlight { border-color: #f2cc60; color: #f2cc60; }
 
-  <div id="quick-cmds">
-    <button class="chip" onclick="execCmd('w')">↑ 前進(W)</button>
-    <button class="chip" onclick="execCmd('a')">↺ 左向(A)</button>
-    <button class="chip" onclick="execCmd('d')">↻ 右向(D)</button>
-    <button class="chip" onclick="execCmd('fight')">⚔️ たたかう</button>
-    <button class="chip" onclick="execCmd('spell')">✨ じゅもん</button>
-  </div>
+      #cmd-form {
+        display: flex;
+        align-items: center;
+        border: 1px solid #fff;
+        padding: 6px 10px;
+      }
+      #prompt { color: #fff; margin-right: 8px; }
+      #cmd-input {
+        flex: 1;
+        background: transparent;
+        border: none;
+        color: #fff;
+        font-size: 16px;
+        font-family: inherit;
+        outline: none;
+      }
+      #send-btn {
+        background: #fff;
+        color: #000;
+        border: none;
+        padding: 4px 10px;
+        font-weight: bold;
+        font-family: inherit;
+      }
+    </style>
+    </head>
+    <body>
 
-  <form id="cmd-form" onsubmit="handleForm(event)">
-    <span id="prompt">&gt;</span>
-    <input type="text" id="cmd-input" placeholder="コマンド or チャット..." autocomplete="off">
-    <button type="submit" id="send-btn">実行</button>
-  </form>
+      <!-- ==================== 1. マイページ画面（地上拠点） ==================== -->
+      <div id="mypage-view" class="hidden">
+        <div class="wiz-box">
+          <h2>⛺ 冒険者のマイページ（地上拠点）</h2>
+          <p>プレイヤー: <b>YOU</b> (LV:1 / 勝利数: <span id="win-count">0</span>)</p>
+          <p style="font-size:11px; color:#8b949e; margin-top:4px;">
+            ※ここでは普段使いのSNS連絡先を設定したり、迷宮でのすれ違い日誌を確認できます。
+          </p>
+        </div>
 
-<script>
-  const screenEl = document.getElementById('ascii-screen');
-  const logEl = document.getElementById('log');
-  const inputEl = document.getElementById('cmd-input');
-  const compassEl = document.getElementById('compass');
-  const minimapEl = document.getElementById('minimap');
+        <div class="wiz-box">
+          <h2>🚪 行動メニュー</h2>
+          <button class="action-btn" onclick="switchMode('dungeon')">▼ ダンジョンに下りる（迷宮探索・対戦）</button>
+          <button class="action-btn" style="color:#79c0ff; border-color:#79c0ff;" onclick="switchMode('dungeon', true)">▼ 酒場（迷宮1F）をまったり散歩する</button>
+        </div>
 
-  // 文字列形式で定義した7x7ミニ迷宮 (#=壁, .=通路)
-  const MAP = [
-    "#######",
-    "#...#.#",
-    "#.#...#",
-    "#.#.###",
-    "#.....#",
-    "#.###.#",
-    "#######"
-  ];
+        <div class="wiz-box">
+          <h2>📜 不在中のすれ違い日誌（非同期ログ）</h2>
+          <div id="diary-list">
+            <div class="diary-item">・昨日、迷宮のB1Fで「アリス」とすれ違った気配がある……</div>
+            <div class="diary-item">・ザコスライムがあなたの落とし物を眺めていた。</div>
+          </div>
+        </div>
 
-  // 方角: 0=北(N), 1=東(E), 2=南(S), 3=西(W)
-  const DIRS = [
-    { name: 'N', dx: 0, dy: -1, arrow: '▲' },
-    { name: 'E', dx: 1, dy: 0,  arrow: '▶' },
-    { name: 'S', dx: 0, dy: 1,  arrow: '▼' },
-    { name: 'W', dx: -1, dy: 0, arrow: '◀' }
-  ];
+        <div class="wiz-box">
+          <h2>🔗 外部SNS連携（ギルドカード公開設定）</h2>
+          <p style="font-size:11px; color:#8b949e; margin-bottom:6px;">
+            オンにしたSNSだけ、トランプ勝負で仲良くなった相手に公開されます。
+          </p>
+          <div class="sns-row">
+            <label><input type="checkbox" id="chk-x" checked> X (Twitter)</label>
+            <input type="text" id="val-x" value="https://x.com">
+          </div>
+          <div class="sns-row">
+            <label><input type="checkbox" id="chk-discord"> Discord ID</label>
+            <input type="text" id="val-discord" placeholder="user#0000">
+          </div>
+          <div class="sns-row">
+            <label><input type="checkbox" id="chk-misskey"> Misskey / Fediverse</label>
+            <input type="text" id="val-misskey" placeholder="@you@misskey.io">
+          </div>
+        </div>
 
-  let px = 1, py = 5, dir = 0;
-  let inBattle = false;
+        <div class="wiz-box">
+          <h2>📖 サイト内コンテンツ（Zola連携）</h2>
+          <ul style="padding-left: 18px; font-size: 12px;">
+            <li><a href="/" style="color:#7ee787;">ポータルトップへ戻る</a></li>
+            <li><a href="/blog/soccer-dokkan/" style="color:#79c0ff;">“サッカーどっかん”ルール・ブックを読む</a></li>
+          </ul>
+        </div>
+      </div>
 
-  const SLIME_AA = [
-    "       .---.       ",
-    "     /       \\     ",
-    "    |  o   o  |    ",
-    "    |   ___   |    ",
-    "   (           )   ",
-    "    `---------'    ",
-    "  [ ゴーストスライム ] "
-  ].join('\n');
+      <!-- ==================== 2. ダンジョン探索画面 ==================== -->
+      <div id="dungeon-view">
+        <div id="viewport" class="wiz-box">
+          <pre id="minimap"></pre>
+          <div id="compass">N (1,5)</div>
+          <pre id="ascii-screen"></pre>
+        </div>
 
-  function isWall(x, y) {
-    if (y < 0 || y >= MAP.length || x < 0 || x >= MAP[0].length) return true;
-    return MAP[y][x] === '#';
-  }
+        <div id="log" class="wiz-box">
+          <div class="msg sys">* 迷宮の入り口に立っている *</div>
+        </div>
+
+        <div id="party" class="wiz-box">
+          <span id="status-text">YOU  LV:1  HP:18/18</span>
+          <span style="cursor:pointer; text-decoration:underline; color:#7ee787;" onclick="switchMode('mypage')">[⛺ 地上に戻る]</span>
+        </div>
+
+        <!-- 状況に応じてボタンが切り替わるエリア -->
+        <div id="quick-cmds"></div>
+
+        <form id="cmd-form" onsubmit="handleForm(event)">
+          <span id="prompt">&gt;</span>
+          <input type="text" id="cmd-input" placeholder="コマンド or チャット..." autocomplete="off">
+          <button type="submit" id="send-btn">実行</button>
+        </form>
+      </div>
+
+    <script>
+      const mypageEl = document.getElementById('mypage-view');
+      const dungeonEl = document.getElementById('dungeon-view');
+      const screenEl = document.getElementById('ascii-screen');
+      const logEl = document.getElementById('log');
+      const inputEl = document.getElementById('cmd-input');
+      const compassEl = document.getElementById('compass');
+      const minimapEl = document.getElementById('minimap');
+      const quickCmdsEl = document.getElementById('quick-cmds');
+      const statusTextEl = document.getElementById('status-text');
+      const winCountEl = document.getElementById('win-count');
+      const diaryListEl = document.getElementById('diary-list');
+
+      // モード切り替え（マイページ ⇄ ダンジョン）
+      function switchMode(mode, isStroll = false) {
+        if (mode === 'mypage') {
+          dungeonEl.classList.add('hidden');
+          mypageEl.classList.remove('hidden');
+          winCountEl.textContent = wins;
+          history.replaceState(null, '', '?mode=mypage');
+        } else {
+          mypageEl.classList.add('hidden');
+          dungeonEl.classList.remove('hidden');
+          history.replaceState(null, '', location.pathname);
+          if (isStroll) {
+            addLog('* 今日はのんびり迷宮を散歩することにした *', 'sys');
+          }
+          renderView();
+          renderButtons();
+        }
+      }
+
+      // 7x7ミニ迷宮
+      const MAP = [
+        "#######",
+        "#...#.#",
+        "#.#...#",
+        "#.#.###",
+        "#.....#",
+        "#.###.#",
+        "#######"
+      ];
+
+      const DIRS = [
+        { name: 'N', dx: 0, dy: -1, arrow: '▲' },
+        { name: 'E', dx: 1, dy: 0,  arrow: '▶' },
+        { name: 'S', dx: 0, dy: 1,  arrow: '▼' },
+        { name: 'W', dx: -1, dy: 0, arrow: '◀' }
+      ];
+
+      let px = 1, py = 5, dir = 0;
+      let wins = 0;
+
+      // エンカウント状態: null | { type: 'slime' | 'alice', name: string, sns?: string }
+      let encounter = null;
+      // ハイ＆ロー進行状態: null | { baseCard: number }
+      let highLowState = null;
+
+      const SLIME_AA = [
+        "       .---.       ",
+        "     /       \\     ",
+        "    |  o   o  |    ",
+        "    |   ___   |    ",
+        "   (           )   ",
+        "    `---------'    ",
+        "  [ ゴーストスライム ] "
+      ].join('\n');
+
+      const ALICE_AA = [
+        "       .---.       ",
+        "      /     \\      ",
+        "     | ^   ^ |     ",
+        "     |   v   |     ",
+        "     /|     |\\     ",
+        "    /_|_____|_\\    ",
+        " [ 冒険者アリス(幽霊) ] "
+      ].join('\n');
+
+      function isWall(x, y) {
+        if (y < 0 || y >= MAP.length || x < 0 || x >= MAP.length) return true;
+        return MAP[y][x] === '#';
+      }
+
+        // 状況に合わせて下のワンタップボタンを切り替え
+    function renderButtons() {
+      if (highLowState) {
+        quickCmdsEl.innerHTML =
+          '<button class="chip highlight" onclick="execCmd(\'high\')">⬆️ HIGH (大きい)</button>' +
+          '<button class="chip highlight" onclick="execCmd(\'low\')">⬇️ LOW (小さい)</button>' +
+          '<button class="chip" onclick="execCmd(\'run\')">💨 やめる</button>';
+      } else if (encounter) {
+        quickCmdsEl.innerHTML =
+          '<button class="chip highlight" onclick="execCmd(\'highlow\')">🃏 ハイ＆ロー勝負</button>' +
+          '<button class="chip" onclick="execCmd(\'fight\')">⚔️ たたかう</button>' +
+          '<button class="chip" onclick="execCmd(\'run\')">💨 にげる</button>';
+      } else {
+        quickCmdsEl.innerHTML =
+          '<button class="chip" onclick="execCmd(\'w\')">↑ 前進(W)</button>' +
+          '<button class="chip" onclick="execCmd(\'a\')">↺ 左向(A)</button>' +
+          '<button class="chip" onclick="execCmd(\'d\')">↻ 右向(D)</button>' +
+          '<button class="chip" onclick="execCmd(\'spell\')">✨ じゅもん</button>' +
+          '<button class="chip" onclick="switchMode(\'mypage\')">⛺ 地上に戻る</button>';
+      }
+    }
 
   function renderView() {
-    compassEl.textContent = `${DIRS[dir].name} (${px},${py})`;
-
-    // 左上のミニマップ更新
-    let mm = '';
-    for (let y = 0; y < MAP.length; y++) {
-      for (let x = 0; x < MAP[y].length; x++) {
-        if (x === px && y === py) mm += DIRS[dir].arrow;
-        else mm += MAP[y][x] === '#' ? '█' : '·';
-      }
-      mm += '\n';
-    }
-    minimapEl.textContent = mm;
-
-    if (inBattle) {
-      screenEl.style.color = '#ff7b72';
-      screenEl.textContent = SLIME_AA;
-      return;
-    }
-
-    screenEl.style.color = '#39d353';
-    const f = DIRS[dir];
-    const l = DIRS[(dir + 3) % 4];
-    const r = DIRS[(dir + 1) % 4];
-
-    const front1Wall = isWall(px + f.dx, py + f.dy);
-    const front2Wall = isWall(px + f.dx * 2, py + f.dy * 2);
-    const left0Wall  = isWall(px + l.dx, py + l.dy);
-    const right0Wall = isWall(px + r.dx, py + r.dy);
-
-    if (front1Wall) {
-      screenEl.textContent = [
-        "+-------------------------+",
-        "|\\                       /|",
-        "| +---------------------+ |",
-        "| |                     | |",
-        "| |                     | |",
-        "| |      [  壁  ]       | |",
-        "| |                     | |",
-        "| |                     | |",
-        "| +---------------------+ |",
-        "|/                       \\|",
-        "+-------------------------+"
-      ].join('\n');
-      return;
-    }
-
-    const L1 = left0Wall  ? "\\ " : "_ ";
-    const R1 = right0Wall ? " /" : " _";
-    const L2 = left0Wall  ? " \\" : " _";
-    const R2 = right0Wall ? "/ " : "_ ";
-
-    const center = front2Wall ? [
-      "|  +-------------------+  |",
-      "|  |                   |  |",
-      "|  |     [ 奥の壁 ]    |  |",
-      "|  |                   |  |",
-      "|  +-------------------+  |"
-    ] : [
-      "|  |\\                 /|  |",
-      "|  | +---------------+ |  |",
-      "|  | |       +       | |  |",
-      "|  | +---------------+ |  |",
-      "|  |/                 \\|  |"
-    ];
-
-    screenEl.textContent = [
-      "+-------------------------+",
-      `|${L1}                     ${R1}|`,
-      `| ${L2}                   ${R2} |`,
-      ...center,
-      `| ${R2}                   ${L2} |`,
-      `|${R1}                     ${L1}|`,
-      "+-------------------------+"
-    ].join('\n');
+  compassEl.textContent = ${DIRS[dir].name} (${px},${py});
+  statusTextEl.textContent = YOU  LV:1  HP:18/18  WIN:${wins};
+  let mm = '';
+  for (let y = 0; y < MAP.length; y++) {
+  for (let x = 0; x < MAP[y].length; x++) {
+  if (x === px && y === py) mm += DIRS[dir].arrow;
+  else mm += MAP[y][x] === '#' ? '█' : '·';
   }
-
+  mm += '\n';
+  }
+  minimapEl.textContent = mm;
+  if (encounter) {
+  screenEl.style.color = encounter.type === 'alice' ? '#d2a8ff' : '#ff7b72';
+  screenEl.textContent = encounter.type === 'alice' ? ALICE_AA : SLIME_AA;
+  return;
+  }
+  screenEl.style.color = '#39d353';
+  const f = DIRS[dir];
+  const l = DIRS[(dir + 3) % 4];
+  const r = DIRS[(dir + 1) % 4];
+  const front1Wall = isWall(px + f.dx, py + f.dy);
+  const front2Wall = isWall(px + f.dx * 2, py + f.dy * 2);
+  const left0Wall  = isWall(px + l.dx, py + l.dy);
+  const right0Wall = isWall(px + r.dx, py + r.dy);
+  if (front1Wall) {
+  screenEl.textContent = [
+  "+-------------------------+",
+  "|\                       /|",
+  "| +---------------------+ |",
+  "| |                     | |",
+  "| |                     | |",
+  "| |      [  壁  ]       | |",
+  "| |                     | |",
+  "| |                     | |",
+  "| +---------------------+ |",
+  "|/                       \|",
+  "+-------------------------+"
+  ].join('\n');
+  return;
+  }
+  const L1 = left0Wall  ? "\ " : "_ ";
+  const R1 = right0Wall ? " /" : " _";
+  const L2 = left0Wall  ? " \" : " ";
+  const R2 = right0Wall ? "/ " : " ";
+  const center = front2Wall ? [
+  "|  +-------------------+  |",
+  "|  |                   |  |",
+  "|  |     [ 奥の壁 ]    |  |",
+  "|  |                   |  |",
+  "|  +-------------------+  |"
+  ] : [
+  "|  |\                 /|  |",
+  "|  | +---------------+ |  |",
+  "|  | |       +       | |  |",
+  "|  | +---------------+ |  |",
+  "|  |/                 \|  |"
+  ];
+  screenEl.textContent = [
+  "+-------------------------+",
+  |${L1}                     ${R1}|,
+  | ${L2}                   ${R2} |,
+  ...center,
+  | ${R2}                   ${L2} |,
+  |${R1}                     ${L1}|,
+  "+-------------------------+"
+  ].join('\n');
+  }
   function triggerStepAnim() {
-    screenEl.classList.add('step-shake');
-    setTimeout(() => screenEl.classList.remove('step-shake'), 80);
+  screenEl.classList.add('step-shake');
+  setTimeout(() => screenEl.classList.remove('step-shake'), 80);
   }
-
   function addLog(text, type = 'sys') {
-    const div = document.createElement('div');
-    div.className = `msg ${type}`;
-    div.textContent = text;
-    logEl.appendChild(div);
-    logEl.scrollTop = logEl.scrollHeight;
+  const div = document.createElement('div');
+  div.className = msg ${type};
+  div.textContent = text;
+  logEl.appendChild(div);
+  logEl.scrollTop = logEl.scrollHeight;
   }
-
+  function addDiary(text) {
+  const div = document.createElement('div');
+  div.className = 'diary-item';
+  div.textContent = ・${text};
+  diaryListEl.prepend(div);
+  }
   function handleForm(e) {
-    e.preventDefault();
-    const val = inputEl.value.trim();
-    if (!val) return;
-    inputEl.value = '';
-    execCmd(val);
+  e.preventDefault();
+  const val = inputEl.value.trim();
+  if (!val) return;
+  inputEl.value = '';
+  execCmd(val);
   }
-
-  function execCmd(cmd) {
-    addLog(`> ${cmd}`, 'user');
-    const c = cmd.toLowerCase();
-
-    if (c === 'w' || c === '前進') {
-      if (inBattle) { addLog('敵が立ちふさがっている！', 'enemy'); return; }
-      const nx = px + DIRS[dir].dx;
-      const ny = py + DIRS[dir].dy;
-      if (isWall(nx, ny)) {
-        addLog('「いてっ！」 目の前は壁だ。');
-        triggerStepAnim();
-        return;
-      }
-      px = nx; py = ny;
-      triggerStepAnim();
-      if (Math.random() < 0.25) {
-        inBattle = true;
-        addLog('おおっと！ ゴーストスライムが現れた！', 'enemy');
-      } else {
-        addLog('一歩進んだ。');
-      }
-      renderView();
-    } else if (c === 'a' || c === '左向') {
-      dir = (dir + 3) % 4;
-      addLog('左を向いた。');
-      renderView();
-    } else if (c === 'd' || c === '右向') {
-      dir = (dir + 1) % 4;
-      addLog('右を向いた。');
-      renderView();
-    } else if (c === 'fight' || c === 'たたかう') {
-      if (!inBattle) { addLog('ここには誰もいない。'); return; }
-      addLog('あなたの攻撃！ ゴーストスライムを倒した！', 'user');
-      inBattle = false;
-      renderView();
-    } else if (c === 'spell' || c === 'じゅもん') {
-      addLog('カティノを唱えた！ 心地よい風が吹いた。');
-    } else {
-      addLog(`「${cmd}」とつぶやいた。`);
-    }
+  function startHighLow() {
+  if (!encounter) {
+  addLog('勝負する相手がいない！');
+  return;
   }
-
+  const baseCard = Math.floor(Math.random() * 11) + 2; // 2〜12が出るようにして駆け引きしやすくする
+  highLowState = { baseCard };
+  addLog(YOU「とりまハイ＆ローで勝負しない？」, 'user');
+  setTimeout(() => {
+  if (encounter.type === 'alice') {
+  addLog(アリス「よし、引き受けた！ 負けないよ！」, 'chat-npc');
+  } else {
+  addLog(スライム「プルプル！（いいよ！）」, 'enemy');
+  }
+  addLog(🃏 場のカードは 【 ${baseCard} 】 だ！(1〜13) 次は HIGH か LOW か？, 'card-art');
+  renderButtons();
+  }, 150);
+  }
+  function resolveHighLow(guess) {
+  if (!highLowState || !encounter) return;
+  const nextCard = Math.floor(Math.random() * 13) + 1;
+  const base = highLowState.baseCard;
+  addLog(🃏 めくられたカードは…… 【 ${nextCard} 】！, 'card-art');
+  const isWin = (guess === 'high' && nextCard > base) || (guess === 'low' && nextCard < base);
+  const isDraw = nextCard === base;
+  if (isDraw) {
+  addLog('引き分け！ もう1回！ 次のカードを選んで！', 'sys');
+  highLowState.baseCard = nextCard;
+  return;
+  }
+  if (isWin) {
+  wins++;
+  addLog(🎉 あなたの勝ち！ ${encounter.name} に勝利した！, 'user');
+  if (encounter.type === 'alice') {
+  addLog(アリス「参りました！ ギルドカード置いていくね！」, 'chat-npc');
+  addLog(📜 [ギルドカード獲得] アリスのSNS: ${encounter.sns}, 'card-art');
+  addDiary(迷宮で「アリス」とハイ＆ロー勝負をして勝利した！);
+  } else {
+  addDiary(ゴーストスライムとのトランプ勝負に勝った。);
+  }
+  } else {
+  addLog(💦 残念、あなたの負け！ ${encounter.name} は満足そうに去っていった。, 'enemy');
+  if (encounter.type === 'alice') {
+  addLog(アリス「やったー！ また迷宮で会おうね！」, 'chat-npc');
+  addDiary(迷宮で「アリス」とハイ＆ロー勝負をして惜敗した。);
+  }
+  }
+  highLowState = null;
+  encounter = null;
   renderView();
-</script>
+  renderButtons();
+  }
+  function execCmd(cmd) {
+  addLog(> ${cmd}, 'user');
+  const c = cmd.toLowerCase();
+  if (highLowState) {
+  if (c === 'high' || c === 'h') { resolveHighLow('high'); return; }
+  if (c === 'low' || c === 'l') { resolveHighLow('low'); return; }
+  if (c === 'run' || c === 'やめる') {
+  addLog('勝負を中断した。');
+  highLowState = null; encounter = null;
+  renderView(); renderButtons();
+  return;
+  }
+  addLog('HIGH か LOW を選んでください！');
+  return;
+  }
+  if (c === 'w' || c === '前進') {
+  if (encounter) { addLog(${encounter.name} が立ちふさがっている！, 'enemy'); return; }
+  const nx = px + DIRS[dir].dx;
+  const ny = py + DIRS[dir].dy;
+  if (isWall(nx, ny)) {
+  addLog('「いてっ！」 目の前は壁だ。');
+  triggerStepAnim();
+  return;
+  }
+  px = nx; py = ny;
+  triggerStepAnim();
+  const r = Math.random();
+  if (r < 0.2) {
+  encounter = { type: 'alice', name: '冒険者アリス', sns: 'x.com' };
+  addLog('！！ 背後から足音が近づいてくる……', 'chat-npc');
+  addLog('「あ、見つけた！ 冒険者アリスが追いかけてきた！」', 'chat-npc');
+  } else if (r < 0.4) {
+  encounter = { type: 'slime', name: 'ゴーストスライム' };
+  addLog('おおっと！ ゴーストスライムが現れた！', 'enemy');
+  } else {
+  addLog('一歩進んだ。');
+  }
+  renderView();
+  renderButtons();
+  } else if (c === 'a' || c === '左向') {
+  dir = (dir + 3) % 4;
+  addLog('左を向いた。');
+  renderView();
+  } else if (c === 'd' || c === '右向') {
+  dir = (dir + 1) % 4;
+  addLog('右を向いた。');
+  renderView();
+  } else if (c === 'highlow' || c === 'ハイ＆ロー勝負') {
+  startHighLow();
+  } else if (c === 'fight' || c === 'たたかう') {
+  if (!encounter) { addLog('ここには誰もいない。'); return; }
+  wins++;
+  addLog(あなたの攻撃！ ${encounter.name} を撃退した！, 'user');
+  encounter = null;
+  renderView();
+  renderButtons();
+  } else if (c === 'run' || c === 'にげる') {
+  if (!encounter) { addLog('逃げる相手がいない。'); return; }
+  addLog(${encounter.name} から距離をとった。);
+  encounter = null;
+  renderView();
+  renderButtons();
+  } else if (c === 'spell' || c === 'じゅもん') {
+  addLog('カティノを唱えた！ 心地よい風が吹いた。');
+  } else {
+  addLog(「${cmd}」とつぶやいた。);
+  }
+  }
+  // PCキーボード操作
+  document.addEventListener('keydown', (e) => {
+  if (document.activeElement === inputEl || !mypageEl.classList.contains('hidden')) return;
+  if (e.key === 'w' || e.key === 'ArrowUp') execCmd('w');
+  if (e.key === 'a' || e.key === 'ArrowLeft') execCmd('a');
+  if (e.key === 'd' || e.key === 'ArrowRight') execCmd('d');
+  });
+  // 初期起動時のURLパラメータ判定 (?mode=mypage ならマイページを開く)
+  const params = new URLSearchParams(location.search);
+  if (params.get('mode') === 'mypage') {
+  switchMode('mypage');
+  } else {
+  renderView();
+  renderButtons();
+  }
+  	</script>
 </body>
 </html>
