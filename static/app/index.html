@@ -872,7 +872,7 @@ function importPoemSpell() {
       triggerStepAnim();
 
       const r = Math.random();
-      if (r < 01.8) {
+      if (r < 0.18) {
         const adv = ADVENTURERS[Math.floor(Math.random() * ADVENTURERS.length)];
         encounter = { type: 'adventurer', name: adv.name, sns: adv.sns, note: adv.note, aa: adv.aa, color: '#d2a8ff' };
         addLog('！！ 背後から足音が近づいてくる……', 'chat-npc');
