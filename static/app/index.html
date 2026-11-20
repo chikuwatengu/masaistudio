@@ -386,14 +386,19 @@ const POEM_WORDS = [
 ];
 const B64_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
-// セーブデータをポエム（復活の呪文）に変換してコピー
-function exportPoemSpell() {
+// セーブデータを圧縮してポエム（復活の呪文）に変換
+async function exportPoemSpell() {
   try {
+    // 日誌は最新15件までに整えて保存
+    saveData.diary = saveData.diary.slice(0, 15);
     const jsonStr = JSON.stringify(saveData);
-    const utf8Bytes = new TextEncoder().encode(jsonStr);
+    const stream = new Blob([jsonStr]).stream().pipeThrough(new CompressionStream('deflate-raw'));
+    const buf = await new Response(stream).arrayBuffer();
+    const bytes = new Uint8Array(buf);
+
     let binStr = "";
-    for (let i = 0; i < utf8Bytes.length; i++) {
-      binStr += String.fromCharCode(utf8Bytes[i]);
+    for (let i = 0; i < bytes.length; i++) {
+      binStr += String.fromCharCode(bytes[i]);
     }
     const b64 = btoa(binStr).replace(/=+$/, "");
 
@@ -408,7 +413,7 @@ function exportPoemSpell() {
     ioEl.value = poem;
     ioEl.select();
     if (navigator.clipboard) {
-      navigator.clipboard.writeText(poem);
+      await navigator.clipboard.writeText(poem);
     }
     alert("復活のポエムを詠唱し、クリップボードにコピーしました！\n別端末のマイページに貼り付けてください。");
   } catch (e) {
@@ -416,8 +421,8 @@ function exportPoemSpell() {
   }
 }
 
-// ポエム（復活の呪文）を解析してセーブデータを復元
-function importPoemSpell() {
+// ポエム（復活の呪文）を解凍してセーブデータを復元
+async function importPoemSpell() {
   try {
     const raw = document.getElementById('spell-io').value.trim();
     const cleaned = raw.replace(/[『』\s\n\r]/g, "");
@@ -426,7 +431,6 @@ function importPoemSpell() {
       return;
     }
 
-    // 文字列の先頭から一致するポエム単語を逆引き
     let b64 = "";
     let pos = 0;
     while (pos < cleaned.length) {
@@ -451,19 +455,20 @@ function importPoemSpell() {
     for (let i = 0; i < binStr.length; i++) {
       bytes[i] = binStr.charCodeAt(i);
     }
-    const jsonStr = new TextDecoder().decode(bytes);
+
+    const stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream('deflate-raw'));
+    const jsonStr = await new Response(stream).text();
     const restored = JSON.parse(jsonStr);
 
     saveData = Object.assign(saveData, restored);
     persistSaveData();
     loadSaveData();
     renderMypage();
-    alert("🔮 復活のポエムが共鳴した！ 冒険の記憶が蘇りました！");
+    alert("🔮 復活のポエムが共鳴した！ 日誌も図鑑もすべて蘇りました！");
   } catch (e) {
     alert("復活に失敗しました……\n" + e.message);
   }
 }
-
 
   // ==================== スライム＆冒険者データ ====================
   const SLIMES = [
