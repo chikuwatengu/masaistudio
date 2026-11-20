@@ -2,8 +2,24 @@
 <html lang="ja">
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{ section.title | default(value=config.title) }}</title>
   <link rel="stylesheet" href="/style.css">
+  <style>
+    body {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 16px;
+      line-height: 1.7;
+      font-size: 16px;
+      word-wrap: break-word;
+    }
+    h1 { font-size: 1.4rem; margin-bottom: 16px; }
+    h2, h3 { font-size: 1.15rem; margin-top: 24px; margin-bottom: 8px; }
+    ul { padding-left: 1.2em; }
+    li { margin-bottom: 10px; }
+    a { display: inline-block; padding: 4px 0; }
+  </style>
 </head>
 <body>
   <h1>{{ section.title | default(value=config.title) }}</h1>
