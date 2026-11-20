@@ -378,7 +378,7 @@ const POEM_WORDS = [
   "闇の", "光の", "眠れる", "踊る", "迷える", "いにしえの", "輝く", "ささやく",
   "スライムが", "リボンが", "星屑が", "勇者が", "アリスが", "剣が", "扉が", "酒場が",
   "迷宮で", "地下で", "夜空に", "焚き火で", "記憶の奥で", "時を超えて", "夢の中で", "彼方で",
-  "微笑む", "祈る", "跳ねる", "眠る", "歌う", "駆ける", "輝く", "消える",
+  "微笑む", "祈る", "跳ねる", "眠る", "歌う", "駆ける", "舞う", "消える",
   "希望の", "秘密の", "約束の", "不思議な", "小さな", "永遠の", "まったり", "気まぐれな",
   "カケラ", "メロディ", "足跡", "トランプ", "呪文", "物語", "宝箱", "冒険",
   "そして", "やがて", "静かに", "ふたたび", "いつしか", "そっと", "遠く", "いま",
@@ -386,11 +386,11 @@ const POEM_WORDS = [
 ];
 const B64_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
-// セーブデータをポエム（復活の呪文）に変換してコピー（日誌は最新5件に絞ってスッキリ）
+// セーブデータをポエム（復活の呪文）に変換してコピー（日誌は最新3件にして短く）
 function exportPoemSpell() {
   try {
     const compactData = Object.assign({}, saveData, {
-      diary: (saveData.diary || []).slice(0, 5)
+      diary: (saveData.diary || []).slice(0, 3)
     });
     const jsonStr = JSON.stringify(compactData);
     const utf8Bytes = new TextEncoder().encode(jsonStr);
@@ -413,7 +413,7 @@ function exportPoemSpell() {
     if (navigator.clipboard) {
       navigator.clipboard.writeText(poem);
     }
-    alert("復活のポエムを詠唱し、クリップボードにコピーしました！\n別端末のマイページに貼り付けてください。");
+    alert("復活のポエム（" + words.length + "語）を詠唱し、コピーしました！");
   } catch (e) {
     alert("呪文の生成に失敗しました: " + e.message);
   }
@@ -423,7 +423,8 @@ function exportPoemSpell() {
 function importPoemSpell() {
   try {
     const raw = document.getElementById('spell-io').value.trim();
-    const cleaned = raw.replace(/[『』\s\n\r]/g, "");
+    // 『』や空白、改行、句点「。」のゆらぎを除去
+    const cleaned = raw.replace(/[『』「」\s\n\r]/g, "");
     if (!cleaned) {
       alert("復活のポエムを入力してください！");
       return;
@@ -443,7 +444,8 @@ function importPoemSpell() {
         }
       }
       if (!matched) {
-        throw new Error("呪文の言葉が一部欠けているか、間違っています！");
+        const around = cleaned.slice(Math.max(0, pos - 6), pos + 12);
+        throw new Error("呪文が途中で途切れているか、未知の言葉があります（付近: 「" + around + "」）");
       }
     }
 
