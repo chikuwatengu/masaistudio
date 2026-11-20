@@ -1,5 +1,5 @@
 +++
-title = "ゲーム＆ブログポータル（テスト）"
+title = "MasaiStudio ゲーム＆ブログポータル（テスト）"
 draft = false
 +++
 
