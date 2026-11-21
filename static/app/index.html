@@ -671,7 +671,7 @@ function importPoemSpell() {
     for (let y = 0; y < MAP.length; y++) {
       for (let x = 0; x < MAP[y].length; x++) {
         if (x === px && y === py) mm += DIRS[dir].arrow;
-        else mm += MAP[y][x] === '#' ? '█' : '·';
+        else mm += MAP[y][x] === '#' ? '█' : '・';
       }
       mm += '\n';
     }
