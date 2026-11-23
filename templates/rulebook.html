@@ -83,18 +83,16 @@ font-size: 1.2em;
 }
 }
 
-.footnotes ol {
-  list-style: none;
-  padding-left: 0;
+article {
   counter-reset: fn-counter;
 }
-.footnotes ol > li {
+.footnote-definition {
   counter-increment: fn-counter;
 }
-.footnotes ol > li::before {
+.footnote-definition::before {
   content: "注" counter(fn-counter) " ";
+  font-weight: bold;
 }
-{% endblock extra_css %}
 
 {% block content %}
 <a href="/" class="back-link">← トップへ戻る</a>
