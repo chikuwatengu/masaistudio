@@ -89,8 +89,8 @@ article {
 .footnote-definition {
   counter-increment: fn-counter;
 }
-.footnote-definition::before {
-  content: "注" counter(fn-counter) " ";
+.footnote-definition-label::before {
+  content: "注";
   font-weight: bold;
 }
 {% endblock extra_css %}
