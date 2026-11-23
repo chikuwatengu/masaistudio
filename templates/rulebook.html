@@ -82,6 +82,18 @@ h2 {
 font-size: 1.2em;
 }
 }
+
+.footnotes ol {
+  list-style: none;
+  padding-left: 0;
+  counter-reset: fn-counter;
+}
+.footnotes ol > li {
+  counter-increment: fn-counter;
+}
+.footnotes ol > li::before {
+  content: "注" counter(fn-counter) " ";
+}
 {% endblock extra_css %}
 
 {% block content %}
