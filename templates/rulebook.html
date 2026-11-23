@@ -93,9 +93,11 @@ article {
   content: "注" counter(fn-counter) " ";
   font-weight: bold;
 }
+{% endblock extra_css %}
 
 {% block content %}
 <a href="/" class="back-link">← トップへ戻る</a>
+
 
 <h1 class="doc-title">{{ page.title }}</h1>
 
