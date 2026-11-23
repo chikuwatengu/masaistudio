@@ -62,6 +62,16 @@ margin-top: 0;
 margin-bottom: 0.45em;
 }
 
+/* 本文の段落(2段目): バレットを星にしてインデントもしない。
+article ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+article ul li::before {
+  content: "☆ ";
+}
+
 /* 画像が字下げで右にずれるのを防ぎ、中央揃えにする */
 article p:has(img) {
 text-indent: 0;
