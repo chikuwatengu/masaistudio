@@ -66,10 +66,19 @@ margin-bottom: 0.45em;
 article ul {
   list-style: none;
   padding-left: 0;
+  margin-left: 0;
 }
 
 article ul li::before {
   content: "☆ ";
+}
+
+article ul li p:first-child {
+  display: inline;
+}
+
+article ul li p {
+  text-indent: 0;
 }
 
 /* 画像が字下げで右にずれるのを防ぎ、中央揃えにする */
