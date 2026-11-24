@@ -116,8 +116,9 @@ font-size: 1.2em;
 }
 
 /* 注釈の表示設定 */
-.footnote-definition-label {
-display: none;
+.footnote-definition-label::before {
+content: "注:";
+font-weight: bold;
 }
 
 {% endblock extra_css %}
