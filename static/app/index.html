@@ -254,11 +254,11 @@
 
     <div class="wiz-box">
           <div class="wiz-box">
-    <h2>📜 復活の呪文（ポエム式・引継ぎコード）</h2>
+    <h2>📜 復活のポエム（引継ぎコード）</h2>
     <p style="font-size:11px; color:#8b949e; margin-bottom:6px;">
       ※PC ⇄ スマホ間のデータ引継ぎ用。冒険の記憶をポエムに封印します。
     </p>
-    <button class="action-btn" style="color:#f2cc60; border-color:#f2cc60;" onclick="exportPoemSpell()">✨ 復活の呪文（ポエム）を唱えてコピー</button>
+    <button class="action-btn" style="color:#f2cc60; border-color:#f2cc60;" onclick="exportPoemSpell()">✨ 復活のポエムを唱えてコピー</button>
     <textarea id="spell-io" rows="3" placeholder="ここに復活のポエムを貼り付けて「復元」を押す..." style="width:100%; background:#161b22; color:#f2cc60; border:1px solid #30363d; padding:6px; font-family:inherit; font-size:12px; margin-top:4px;"></textarea>
     <button class="action-btn" style="margin-top:6px; text-align:center;" onclick="importPoemSpell()">🔮 ポエムから冒険を再開する</button>
   </div>
@@ -373,7 +373,7 @@
     location.reload();
   }
 
-    // ==================== ポエム式・復活の呪文 ====================
+    // ==================== 復活のポエム ====================
 const POEM_WORDS = [
   "闇の", "光の", "眠れる", "踊る", "迷える", "いにしえの", "輝く", "ささやく",
   "スライムが", "リボンが", "星屑が", "勇者が", "アリスが", "剣が", "扉が", "酒場が",
@@ -386,7 +386,7 @@ const POEM_WORDS = [
 ];
 const B64_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
-// セーブデータをポエム（復活の呪文）に変換してコピー（日誌は最新3件にして短く）
+// セーブデータを復活のポエムに変換してコピー（日誌は最新3件にして短く）
 function exportPoemSpell() {
   try {
     const compactData = Object.assign({}, saveData, {
@@ -419,7 +419,7 @@ function exportPoemSpell() {
   }
 }
 
-// ポエム（復活の呪文）を解析してセーブデータを復元
+// 復活のポエムを解析してセーブデータを復元
 function importPoemSpell() {
   try {
     const raw = document.getElementById('spell-io').value.trim();
