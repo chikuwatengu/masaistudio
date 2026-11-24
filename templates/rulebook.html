@@ -131,13 +131,14 @@ font-weight: bold;
 <article>
     <!-- 本文の表示と、注釈から元の位置へ戻るリンクの自動生成 -->
     {% set content = page.content | regex_replace(pattern='href="#fn:(\\d+)"', rep='id="fnref:$1" href="#fn:$1"') %}
-
+    {% set content = content | regex_replace(pattern='\\((?:注:?|fn)\\s*<sup class="footnote-reference">(<a[^>]+>\\d+</a>)</sup>\\)', rep='<sup class="footnote-reference">(注:$1)</sup>') %}
     {% for i in range(start=1, end=50) %}
-    {% set old = '<div class="footnote-definition" id="fn:' ~ i ~ '"><sup class="footnote-definition-label">' ~ i ~ '</sup>' %}
-    {% set new = '<div class="footnote-definition" id="fn:' ~ i ~ '"><sup class="footnote-definition-label"><a href="#fnref:' ~ i ~ '">' ~ i ~ '</a></sup>' %}
-    {% set_global content = content | replace(from=old, to=new) %}
+        {% set old = '<div class="footnote-definition" id="fn:' ~ i ~ '"><sup class="footnote-definition-label">' ~ i ~ '</sup>' %}
+        {% set new = '<div class="footnote-definition" id="fn:' ~ i ~ '"><sup class="footnote-definition-label"><a href="#fnref:' ~ i ~ '">' ~ i ~ '</a></sup>' %}
+        {% set_global content = content | replace(from=old, to=new) %}
     {% endfor %}
     {{ content | safe }}
 </article>
+
 
 {% endblock content %}
