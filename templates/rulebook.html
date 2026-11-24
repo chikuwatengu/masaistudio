@@ -121,6 +121,21 @@ content: "注:";
 font-weight: bold;
 }
 
+/* ルビ（振り仮名）の表示設定：昭和の学術書・文庫本風の組版に馴染ませる */
+ruby {
+display: ruby;
+ruby-align: center; /* 親文字の中央にルビを揃える */
+}
+rt {
+display: ruby-text;
+font-size: 0.55em;  /* 明朝体で読みやすく主張しすぎないサイズ */
+line-height: 1;     /* ルビによって本文の行間が広がりすぎるのを防ぐ */
+letter-spacing: 0;  /* 文字間が広がりすぎないよう調整 */
+}
+rp {
+display: none;      /* 対応ブラウザでは括弧 () を非表示にする */
+}
+
 {% endblock extra_css %}
 
 {% block content %}
