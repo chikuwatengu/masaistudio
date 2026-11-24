@@ -64,34 +64,34 @@ margin-bottom: 0.45em;
 
 /* 本文の段落(2段目): バレットを☆にしてインデントもしない */
 article ul {
-  list-style: none;
-  padding-left: 0;
-  margin-left: 0;
+list-style: none;
+padding-left: 0;
+margin-left: 0;
 }
 
 article ul li::before {
-  content: "☆ ";
+content: "☆ ";
 }
 
 article ul li::first-line {
-  font-weight: bold;
-  text-decoration: underline;
+font-weight: bold;
+text-decoration: underline;
 }
 
 article ul li p:first-child {
-  display: inline;
+display: inline;
 }
 
 article ul li {
-  font-weight: normal;
+font-weight: normal;
 }
 
 article ul li::first-line {
-  font-weight: bold;
+font-weight: bold;
 }
 
 article ul li p {
-  text-indent: 0;
+text-indent: 0;
 }
 
 /* 画像が字下げで右にずれるのを防ぎ、中央揃えにする */
@@ -115,21 +115,15 @@ font-size: 1.2em;
 }
 }
 
-article {
-  counter-reset: fn-counter;
+/* 注釈の表示設定 */
+.footnote-definition-label {
+display: none;
 }
-.footnote-definition {
-  counter-increment: fn-counter;
-}
-.footnote-definition-label::before {
-  content: "注";
-  font-weight: bold;
-}
+
 {% endblock extra_css %}
 
 {% block content %}
 <a href="/" class="back-link">← トップへ戻る</a>
-
 
 <h1 class="doc-title">{{ page.title }}</h1>
 
