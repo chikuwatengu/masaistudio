@@ -1,5 +1,5 @@
 +++
-title = "“サッカーどっかん”ルール・ブック"
+title = "RULEBOOK_サッカーどっかんルール・ブック_ルビ辞書 “サッカーどっかん”ルール・ブック"
 author = ["Takayoshi Tarui"]
 draft = false
 template = "rulebook.html"
