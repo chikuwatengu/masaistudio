@@ -7,13 +7,7 @@ template = "rulebook.html"
 
 ## 「ゲームを記録する 特別編集」 屋外ゲーム・シリーズ Vol. 0001 {#ゲームを記録する-特別編集-屋外ゲーム-シリーズ-vol-dot-0001}
 
-<style>.org-center { margin-left: auto; margin-right: auto; text-align: center; }</style>
-
-<div class="org-center">
-
 テキスト by ﾁｸﾜ🐱
-
-</div>
 
 2026年11月20日更新
 ![](/ox-hugo/SoccerBall(dl_asset)_rdesign_09753.png)
