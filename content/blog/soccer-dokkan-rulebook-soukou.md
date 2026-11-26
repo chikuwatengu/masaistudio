@@ -13,7 +13,7 @@ template = "rulebook.html"
 ![](/ox-hugo/SoccerBall(dl_asset)_rdesign_09753.png)
 
 
-### 今回の更新内容 {#今回の更新内容}
+### 今回の更新内容(Ver.0.96) {#今回の更新内容--ver-dot-0-dot-96}
 
 『<ruby>線<rp>(</rp><rt>せん</rt><rp>)</rp>上<rp>(</rp><rt>じょう</rt><rp>)</rp></ruby>』についての注釈を追加
 
