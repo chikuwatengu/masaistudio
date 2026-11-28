@@ -170,7 +170,7 @@ template = "rulebook.html"
 
 うまくいくと敵陣にボールが着地したと同時にボールがゴロゴロと転がり、敵側はなすすべもありません。<br />
 <br />
-<span style="font-family: '游ゴシック', 'Yu Gothic', 'Meiryo', 'Hiragino Kaku Gothic ProN', sans-serif; font-weight: bold;"><ruby>後<rp>(</rp><rt>あと</rt><rp>)</rp></ruby>バウンドの特筆すべきポイント</span>
+**<ruby>後<rp>(</rp><rt>あと</rt><rp>)</rp></ruby>バウンドの特筆すべきポイント**<br />
 
 勘の良いプレイヤーはすでにお気づきかと思いますが、<ruby>後<rp>(</rp><rt>あと</rt><rp>)</rp></ruby>バウンドが直接自陣の利益になる組み合わせは、中学対高校の場合のみです。
 

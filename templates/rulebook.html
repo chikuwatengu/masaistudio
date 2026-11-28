@@ -136,6 +136,14 @@ rp {
 display: none;      /* 対応ブラウザでは括弧 () を非表示にする */
 }
 
+/* 太字（*...*）と、リスト（- ...）の1行目をゴシック体にする */
+article strong,
+article strong *,
+article ul li::first-line {
+font-family: "游ゴシック", "Yu Gothic", "Meiryo", "Hiragino Kaku Gothic ProN", sans-serif !important;
+font-weight: bold;
+}
+
 {% endblock extra_css %}
 
 {% block content %}
